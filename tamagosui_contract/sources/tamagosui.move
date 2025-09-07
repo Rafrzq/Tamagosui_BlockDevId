@@ -23,6 +23,8 @@ const PET_LEVEL_3_IMAGE_URL: vector<u8> = b"https://tan-kind-lizard-741.mypinata
 const PET_LEVEL_3_IMAGE_WITH_GLASSES_URL:vector<u8> = b"https://tan-kind-lizard-741.mypinata.cloud/ipfs/bafkreigs6r3rdupoji7pqmpwe76z7wysguzdlq43t3wqmzi2654ux5n6uu";
 const PET_SLEEP_IMAGE_URL: vector<u8> = b"https://tan-kind-lizard-741.mypinata.cloud/ipfs/bafkreihwofl5stihtzjixfhrtznd7zqkclfhmlshgsg7cbszzjqqpvf7ae";
 const ACCESSORY_GLASSES_IMAGE_URL: vector<u8> = b"https://tan-kind-lizard-741.mypinata.cloud/ipfs/bafkreigyivmq45od3jkryryi3w6t5j65hcnfh5kgwpi2ex7llf2i6se7de";
+const ACCESSORY_HAT_IMAGE_URL: vector<u8> = b"https://coral-advanced-parrotfish-559.mypinata.cloud/ipfs/bafkreiepz2u2rcvnfwt66d3cksihbahy2dd4jdudsxgu73m4xqz6l2ozcu";
+
 
 const EQUIPPED_ITEM_KEY: vector<u8> = b"equipped_item";
 const SLEEP_STARTED_AT_KEY: vector<u8> = b"sleep_started_at";
@@ -347,12 +349,20 @@ public entry fun check_and_level_up(pet: &mut Pet) {
     emit_action(pet, b"leveled_up")
 }
 
-public entry fun mint_accessory(ctx: &mut TxContext) {
+public fun mint_accessory(ctx: &mut TxContext, accessory_type: u8) {
+    // 0 = glasses, 1 = hat
+    let (name, image_url) = if (accessory_type == 0) {
+        (b"cool glasses", ACCESSORY_GLASSES_IMAGE_URL)
+    } else {
+        (b"cool hat", ACCESSORY_HAT_IMAGE_URL)
+    };
+
     let accessory = PetAccessory {
         id: object::new(ctx),
-        name: string::utf8(b"cool glasses"),
-        image_url: string::utf8(ACCESSORY_GLASSES_IMAGE_URL)
+        name: string::utf8(name),
+        image_url: string::utf8(image_url)
     };
+
     transfer::public_transfer(accessory, ctx.sender());
 }
 
